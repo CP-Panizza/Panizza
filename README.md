@@ -16,7 +16,7 @@ Path=${GOPATH}\src\github.com\CP-Panizza\panizza\bin
 ```
 Open cmd
 ```cmd
-Panizza -n "your project name like `my_first_pro`"
+Pan -n "your project name like `my_first_pro`"
 ```
 And then, the cli created a project named my_first_pro on the current path,like this:
 ```text
@@ -46,7 +46,7 @@ import(
 
 //@Controller
 type MyController struct{
-    Hello Handle `methos:"GET" path:"/hello" inject:"Hello"`
+    Hello Handle `methods:"GET" path:"/hello" inject:"Hello"`
 }
 
 //@Service
@@ -78,5 +78,29 @@ you will get the result.
 ### tip:&nbsp;&nbsp;panizza support <font color="green">@Controller,@Service,@Filter,@Aspect</font>.All of them are called component.</br>
 If you make a new component,must be run the order <font color="green">Panizza -c</font> to make it work!!!
 
+# project config
+A project has a config file, it name is application.conf and in this file has three already exsist varibles.
+PROJECT_PACKAGE:  your project's rootpath.
+PORT:  your app listening port.
+FILE_SERVER:  your file rootpath.
+you can set the 'inject' tag on your component field to get config.
+## Example:
+application.conf
+```text
+APPID=wx264sd6sd844c
+```
+Service.go
+```go
+//@Service
+type MyService struct{
+    AppId string `inject:"APPID"`  //you can get the config by inject:"APPID" tag
+}
+
+func (this *MyService)Handle(ctx *HandleContext){
+        fmt.Println(this.AppId) //wx264sd6sd844c
+}
+```
+And you can defind a list in config like this:
+MYLIST=[aaaa,bbbb,cccc,dddd]
 # inject
 It likes springboot's @AotoWired
