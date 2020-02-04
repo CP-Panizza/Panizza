@@ -65,7 +65,7 @@ func (this *MyService)Hello(ctx *HandleContext){
 &nbsp;&nbsp;And then, we defind a struct who has a function named Hello to implement MyController's Helle inline function.</br>
 Open cmd and goto my_first_pro direction enter order:
 ```cmd
-Panizza -c    # -c it means complie.
+Pan -c    # -c it means complie.
 ```
 This order is auto complie the components for current project. Add the MyController and MyService to the Ioc as a component.
 
@@ -79,11 +79,11 @@ you will get the result.
 If you make a new component,must be run the order <font color="green">Panizza -c</font> to make it work!!!
 
 # project config
-A project has a config file, it name is application.conf and in this file has three already exsist varibles.
-PROJECT_PACKAGE:  your project's rootpath.
-PORT:  your app listening port.
-FILE_SERVER:  your file rootpath.
-you can set the 'inject' tag on your component field to get config.
+A project has a config file, it name is application.conf and in this file has three already exsist varibles.</br>
+PROJECT_PACKAGE:  your project's rootpath.</br>
+PORT:  your app listening port.</br>
+FILE_SERVER:  your file rootpath.</br>
+you can set the 'inject' tag on your component field to get config.</br>
 ## Example:
 application.conf
 ```text
@@ -100,7 +100,12 @@ func (this *MyService)Handle(ctx *HandleContext){
         fmt.Println(this.AppId) //wx264sd6sd844c
 }
 ```
-And you can defind a list in config like this:
+And you can defind a list in config like this:</br>
+```text
+#[]string
 MYLIST=[aaaa,bbbb,cccc,dddd]
+#map[string]string
+MYMAP={name:aaaa,school:bbb}
+```
 # inject
 It likes springboot's @AotoWired
