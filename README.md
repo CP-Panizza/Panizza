@@ -100,7 +100,7 @@ func (this *MyService)Handle(ctx *HandleContext){
         fmt.Println(this.AppId) //wx264sd6sd844c
 }
 ```
-And you can defind a list in config like this:</br>
+And you can defind another data type in config like this:</br>
 ```text
 #[]string
 MYLIST=[aaaa,bbbb,cccc,dddd]
@@ -109,3 +109,42 @@ MYMAP={name:aaaa,school:bbb}
 ```
 # inject
 It likes springboot's @AotoWired
+
+Set it on your component field like this:</br>
+```go
+//@Service
+type MyService struct{
+    GormDB *gorm.DB `inject:"db"`
+}
+```
+ioc will inject value into that field.
+
+# Add been to Ioc.
+You can defind a function to add a been to ioc by use @Been:</br>
+```go
+var db *gorm.DB
+
+//db will be add to ioc. and you can use `inject:"gorm_db"` tag get this been.
+//@Been(name="gorm_db")
+func DB_Been()interface{}{
+	return db
+}
+
+func init() {
+	var err error
+	db, err = gorm.Open("mysql", "localhost:3306@xxxxxx")
+	if err != nil {
+		panic(err)
+	}
+
+	db.DB().SetMaxIdleConns(10)
+
+	db.DB().SetMaxOpenConns(100)
+
+	if err := db.DB().Ping(); err != nil {
+		panic("connect err!")
+	}
+
+	fmt.Println("connect seccess!")
+}
+```
