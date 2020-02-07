@@ -224,6 +224,10 @@ func RegisterService(s interface{}) interface{} {
 	t := reflect.TypeOf(s)
 	for i := 0; i < v.NumMethod(); i++ {
 		name := t.Method(i).Name
+		if name == "OnCreate" {
+			v.Method(i).Call([]reflect.Value{})
+			continue
+		}
 		handle, ok := v.Method(i).Interface().(func(*HandleContext))
 		if !ok {
 			fmt.Println(name + " is not a Panizza.Handle!")

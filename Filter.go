@@ -10,8 +10,14 @@ type FilterImpl struct {
 }
 
 func (mw *FilterImpl) Use(s interface{}) {
+	t := reflect.TypeOf(s)
 	v := reflect.ValueOf(s)
 	for i := 0; i < v.NumMethod(); i++ {
+		name := t.Method(i).Name
+		if name == "OnCreate" {
+			v.Method(i).Call([]reflect.Value{})
+			continue
+		}
 		handle, ok := v.Method(i).Interface().(func(*HandleContext))
 		if !ok {
 			panic(errors.New("Method must is func(*HandleContext)"))

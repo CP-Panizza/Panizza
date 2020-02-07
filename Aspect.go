@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 	"container/list"
+	"reflect"
 )
 
 //全局存放注册的Aspect
@@ -19,11 +20,20 @@ type Aspect interface {
 
 //传入Aspect指针，注册Aspect
 func RegistAspecter(aspect interface{}) {
+	t := reflect.TypeOf(aspect)
+	v := reflect.ValueOf(aspect)
+	for i := 0; i < v.NumMethod(); i++ {
+		name := t.Method(i).Name
+		if name == "OnCreate" {
+			v.Method(i).Call([]reflect.Value{})
+			continue
+		}
+	}
 	handleNamesString := (aspect.(Aspect)).Config()
-	log.Println("Aspect at HandleName:", handleNamesString)
 	if handleNamesString == "" {
 		return
 	}
+	log.Println("Aspect at HandleName:", handleNamesString)
 
 	handleNamesSlice := strings.Split(handleNamesString, "|")
 
