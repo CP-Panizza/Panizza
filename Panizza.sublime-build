@@ -1,0 +1,12 @@
+{
+	"shell_cmd": "echo start build project!&Pan -c $file_path&go build $file",
+	"selector": "source.go",
+	"encoding": "utf-8",
+	"variants":
+		[
+			 {
+				"name": "Run",
+				 "shell_cmd": "Pan -c $file_path&go build $file&& start cmd /k \"${file_base_name}.exe & pause\""
+			 }
+		]
+}
