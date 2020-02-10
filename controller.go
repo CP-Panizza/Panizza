@@ -31,9 +31,15 @@ func (mt *controller) controller(s interface{}) {
 	v := reflect.ValueOf(s).Elem()
 	t := reflect.TypeOf(s).Elem()
 	pkgPath := v.Type().PkgPath()
-
 	//用结构体名称作为父路由前缀
 	structName := strings.ToLower(t.Name())
+	groupNameFunc := reflect.ValueOf(s).MethodByName("GroupName")
+	var groupName string = ""
+	if groupNameFunc.IsValid() {
+		result := groupNameFunc.Call([]reflect.Value{})
+		groupName = result[0].Interface().(string)
+	}
+
 
 	if t.Kind().String() != "struct" {
 		panic(errors.New("only accept struct"))
@@ -69,7 +75,13 @@ loop:
 			description = "no description!"
 		}
 
-		if structName != "" {
+		if groupName != "" {
+			if !ok1 {
+				path = "/" + groupName
+			} else {
+				path = "/" + groupName + path
+			}
+		} else if structName != "" {
 			if !ok1 {
 				path = "/" + structName
 			} else {

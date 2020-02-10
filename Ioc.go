@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 	"sync"
+	"log"
 )
 
 var (
@@ -105,6 +106,16 @@ func RegisterComponents(been interface{}) {
 		RegistAspecter(IocInstance.Inject(instance))
 	}
 
+	defer func() {
+		port := panizzaInstance.GetBeen("PORT")
+		portString := ""
+		if port == nil {
+			portString = "8080"
+		} else {
+			portString = port.(string)
+		}
+		log.Println("Panizza started at:", portString)
+	}()
 }
 
 //提供外部调用依赖注入,传入实例指针

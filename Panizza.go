@@ -151,6 +151,7 @@ func (pz *Panizza) StartServer() {
 	port, ok := AppConfig.GetConfiger("PORT")
 	if !ok {
 		port = "8080"
+		pz.AddBeen("PORT", 8080)
 	}
 
 	if err := http.ListenAndServe(":"+(port).(string), pz); err != nil {
