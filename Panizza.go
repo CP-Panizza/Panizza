@@ -1,7 +1,13 @@
 package Panizza
 
+/*
+#include "check.h"
+*/
+import "C"
+
 import (
 	"bufio"
+	"container/list"
 	"errors"
 	"fmt"
 	"io"
@@ -13,7 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"container/list"
 )
 
 var panizzaInstance *Panizza
@@ -233,12 +238,11 @@ func handle404(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "page is not found!")
 }
 
-
 //遍历list寻path找对应的node
-func getNodeByPath(handlerList list.List, path string) *node{
+func getNodeByPath(handlerList list.List, path string) *node {
 	for e := handlerList.Front(); e != nil; e = e.Next() {
 		n := e.Value.(*node)
-		if n.path == path{
+		if n.path == path {
 			return n
 		}
 	}
@@ -261,10 +265,9 @@ func routerHandle(ctx *HandleContext, pz *Panizza, handlerList list.List) {
 		}
 	}
 
-
 	for e := handlerList.Front(); e != nil; e = e.Next() {
 		n1 := e.Value.(*node)
-		if ctx.Check(n1.path, ctx.Request.URL.Path) {
+		if C.Check(C.CString(n1.path), C.CString(ctx.Request.URL.Path)) == 1 {
 			ctx.GetParams(n1.path, ctx.Request.URL.Path)
 			if n1.HasAspect {
 				aspect, _ = Aspecters.Load(n1.HandleName)
