@@ -1,10 +1,5 @@
 package Panizza
 
-/*
-#include "check.h"
-*/
-import "C"
-
 import (
 	"bufio"
 	"container/list"
@@ -254,7 +249,6 @@ func routerHandle(ctx *HandleContext, pz *Panizza, handlerList list.List) {
 	n := getNodeByPath(handlerList, ctx.Request.URL.Path)
 	var aspect interface{}
 	if n != nil {
-		//log.Println("task: 同步执行处理函数!")
 		if n.HasAspect {
 			aspect, _ = Aspecters.Load(n.HandleName)
 			RecoverAspectHandle(n.HandlerFunc, aspect, n.HandleName)(ctx)
@@ -267,7 +261,7 @@ func routerHandle(ctx *HandleContext, pz *Panizza, handlerList list.List) {
 
 	for e := handlerList.Front(); e != nil; e = e.Next() {
 		n1 := e.Value.(*node)
-		if C.Check(C.CString(n1.path), C.CString(ctx.Request.URL.Path)) == 1 {
+		if ctx.Check(n1.path, ctx.Request.URL.Path) {
 			ctx.GetParams(n1.path, ctx.Request.URL.Path)
 			if n1.HasAspect {
 				aspect, _ = Aspecters.Load(n1.HandleName)

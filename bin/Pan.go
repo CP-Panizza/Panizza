@@ -63,7 +63,7 @@ var mainFile string
 var initProFileContent = `package initPro
 
 import (
-	."github.com/18788567655/Panizza"
+	."github.com/CP-Panizza/Panizza"
 )
 
 var	App = New()
@@ -190,14 +190,14 @@ PORT=8080
 }
 
 type BeenAnn struct {
-	FilePkg string
+	FilePkg    string
 	RowDataStr string
-	FuncName string
-	BeenName string
-	Pkg      string
+	FuncName   string
+	BeenName   string
+	Pkg        string
 }
 
-func (b *BeenAnn)String() string {
+func (b *BeenAnn) String() string {
 	return "\n\t" + "App.AddBeen(" + b.BeenName + "," + b.FuncName + ")" + "\r"
 }
 
@@ -206,6 +206,7 @@ var beens = []BeenAnn{}
 var targetFile string
 
 var targetPkg string
+
 //进行项目编译
 func Complie() {
 
@@ -247,7 +248,7 @@ func Complie() {
 		if len(been) != 0 {
 			for _, v := range been {
 				b := BeenAnn{
-					FilePkg: absPkgPath,
+					FilePkg:    absPkgPath,
 					RowDataStr: v,
 				}
 				beens = append(beens, b)
@@ -266,17 +267,15 @@ func Complie() {
 		}
 	}
 
-
-	for k,v := range Anns {
-		a , err := ParserAnns(v)
+	for k, v := range Anns {
+		a, err := ParserAnns(v)
 		if err != nil {
 			panic(err)
 		}
 		Anns[k] = a
 	}
 
-
-	for k,v :=range beens {
+	for k, v := range beens {
 		b, err := ParserBeens(v)
 		if err != nil {
 			panic(err)
@@ -294,7 +293,6 @@ func Complie() {
 		}
 	}
 
-
 	beensString := ""
 	for _, v := range beens {
 		beensString += v.String()
@@ -302,7 +300,6 @@ func Complie() {
 			pkgsString += "\n\t" + v.Pkg + "\r"
 		}
 	}
-
 
 	panizzaPath, err := FindFileAbsPath("Panizza.go")
 	if err != nil {
@@ -345,7 +342,7 @@ func CreateInitProContent(pkgs, comps, beens string) string {
 	temp := `package initPro
 
 import (
-	`+ pkgs +`
+	` + pkgs + `
 )
 
 var	App = New()
@@ -355,14 +352,14 @@ type Components struct {
 }
 
 func init() {
-`+ beens +`
+` + beens + `
 	RegisterComponents(new(Components))
 }`
 	return temp
 }
 
 //从字符串中获取been的名字
-func GetBeensNameFromStr(str string)(string, error){
+func GetBeensNameFromStr(str string) (string, error) {
 
 	regName, err := regexp.Compile(`\([\w\W]+?\)`)
 	if err != nil {
@@ -372,16 +369,16 @@ func GetBeensNameFromStr(str string)(string, error){
 	if len(name) == 0 {
 		return "", errors.New("can not getBeensName at :" + str)
 	}
-	name = name[1 : len(name) - 1]
+	name = name[1 : len(name)-1]
 
 	name = strings.TrimSpace(strings.Split(name, "=")[1])
 
-	return name , nil
+	return name, nil
 }
 
 //获取return been的方法名
-func GetBeenFuncNameFromStr(str string)(string, error){
-	funcName := strings.TrimSpace(str[strings.Index(str, "func") + 4:])
+func GetBeenFuncNameFromStr(str string) (string, error) {
+	funcName := strings.TrimSpace(str[strings.Index(str, "func")+4:])
 	if len(funcName) == 0 {
 		return "", errors.New("can not getFuncName at:" + str)
 	}
@@ -389,21 +386,21 @@ func GetBeenFuncNameFromStr(str string)(string, error){
 }
 
 //解析Been注解
-func ParserBeens(b BeenAnn) (BeenAnn, error){
+func ParserBeens(b BeenAnn) (BeenAnn, error) {
 	beenName, err := GetBeensNameFromStr(b.RowDataStr)
-	if err != nil{
+	if err != nil {
 		return BeenAnn{}, err
 	}
 	b.BeenName = beenName
 
 	beenFuncName, err := GetBeenFuncNameFromStr(b.RowDataStr)
-	if err != nil{
+	if err != nil {
 		return BeenAnn{}, err
 	}
 	b.FuncName = beenFuncName
 
 	pkg, err := GetRelPath(targetPkg, b.FilePkg)
-	if err != nil{
+	if err != nil {
 		return BeenAnn{}, err
 	}
 	pkg = "." + `"` + pkg + `"`

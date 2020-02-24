@@ -135,14 +135,14 @@ var logo = `
  ____             _
 |  _ \ __ _ _ __ (_)__________ _
 | |_) / _' | '_ \| |_  /_  / _' |
-|  __/ (_| | | | | |/ / / / (_) |
+|  __/ (_| | | | | |/ / / / (_) |   https://cp-panizza.github.io/Panizza
 |_|   \__,_|_| |_|_/___/___\__,_|   by:NoOne
 `
 
 var miniLogo = ` 
  _
 |_) _  _ ._ _  _
-|  (_l| ||/_/_(_l 
+|  (_l| ||/_/_(_l  https://cp-panizza.github.io/Panizza
 ----by:NoOne----
 `
 

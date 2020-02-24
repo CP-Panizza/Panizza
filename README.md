@@ -3,16 +3,16 @@
 Quickly to build a restapi web application!!!
 
 ## QUICK START
-
+#web  https://cp-panizza.github.io/Panizza/
 Install panizza
 
 ``` cmd
-go get github.com/CP-Panizza/panizza
+go get github.com/CP-Panizza/Panizza
 ```
 
 Add panizza to environment variable path
 ```cmd
-Path=${GOPATH}\src\github.com\CP-Panizza\panizza\bin
+Path=${GOPATH}\src\github.com\CP-Panizza\Panizza\bin
 ```
 Open cmd
 ```cmd
