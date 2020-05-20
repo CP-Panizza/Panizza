@@ -47,37 +47,32 @@ func (ctx *HandleContext) Abort(code int) {
 }
 
 //传入结构体指针，把请求参数绑定到结构体内部
-func (ctx *HandleContext) Bind(i interface{}) {
+func (ctx *HandleContext) Bind(i interface{}) error {
 
 	parameResult := ctx.ParamMap
 	if len(parameResult) != 0 {
-
-		bindVal2Struct(i, ctx.ParamParser)
-
+		return bindVal2Struct(i, ctx.ParamParser)
 	} else {
 		//非url参数绑定到结构体
 		fmt.Println("非url参数绑定到结构体")
 		err := ctx.Request.ParseForm()
 		if err != nil {
-			panic(err)
+			return err
 		}
-		//fmt.Println("ctx.Request.Form:", ctx.Request.Form)
 		content_type := ctx.Request.Header.Get("Content-Type")
-		fmt.Println("content_type:", content_type)
-
 		if content_type == "application/json" {
 			body, err := ioutil.ReadAll(ctx.Request.Body)
 			if err != nil {
-				panic(err)
+				return err
 			}
 
 			if len(body) == 0 {
-				return
+				return errors.New("body len is zero")
 			}
 			valMap := map[string]interface{}{}
 			err = json.Unmarshal(body, &valMap)
 			if err != nil {
-				panic(err)
+				return err
 			}
 			pp := ParamParser{}
 			val := map[string]string{}
@@ -94,19 +89,16 @@ func (ctx *HandleContext) Bind(i interface{}) {
 				}
 			}
 			pp.ParamMap = val
-			bindVal2Struct(i, pp)
-			return
+			return bindVal2Struct(i, pp)
 		} else if strings.HasPrefix(content_type, "multipart/form-data") {
 			//设置存储容量
 			mr, err := ctx.Request.MultipartReader()
 			if err != nil {
-				log.Println(err)
-				return
+				return err
 			}
 			form, err := mr.ReadForm(512)
 			if err != nil {
-				log.Println(err)
-				return
+				return err
 			}
 
 			pp := ParamParser{}
@@ -117,8 +109,7 @@ func (ctx *HandleContext) Bind(i interface{}) {
 			}
 
 			pp.ParamMap = valMap
-			bindVal2Struct(i, pp)
-			return
+			return bindVal2Struct(i, pp)
 		} else if len(ctx.Request.Form) != 0 {
 			//从url参数里面绑定到结构体
 			valMap := make(map[string]string)
@@ -128,14 +119,14 @@ func (ctx *HandleContext) Bind(i interface{}) {
 			}
 			pp.ParamMap = valMap
 			fmt.Println("form:", valMap)
-			bindVal2Struct(i, pp)
-			return
+			return bindVal2Struct(i, pp)
 		}
 	}
+	return nil
 }
 
 //传入结构体实例和paramParser对象，把paramParser对象内的数据绑定到结构体中
-func bindVal2Struct(i interface{}, paramParser ParamParser) {
+func bindVal2Struct(i interface{}, paramParser ParamParser) error {
 
 	v := reflect.ValueOf(i).Elem()
 	for i := 0; i < v.NumField(); i++ {
@@ -157,32 +148,32 @@ func bindVal2Struct(i interface{}, paramParser ParamParser) {
 				panic(err)
 			}
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		case "int64":
 			data, err := paramParser.ParameInt64(name)
 			if err != nil {
 				panic(err)
 			}
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		case "string":
 			data := paramParser.Parame(name)
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		case "float32":
 			data, err := paramParser.ParameFloat32(name)
 			if err != nil {
 				panic(err)
 			}
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		case "float64":
 			data, err := paramParser.ParameFloat64(name)
 			if err != nil {
 				panic(err)
 			}
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		case "time.Time":
 
 			t := paramParser.Parame(name)
@@ -203,15 +194,16 @@ func bindVal2Struct(i interface{}, paramParser ParamParser) {
 			}
 
 			v.Field(i).Set(reflect.ValueOf(formatTime))
-			break
+			return nil
 		case "bool":
 			data := paramParser.ParameBool(name)
 			v.Field(i).Set(reflect.ValueOf(data))
-			break
+			return nil
 		default:
-			fmt.Println("not soupport :", typeof)
+			return errors.New(fmt.Sprintf("not soupport :", typeof))
 		}
 	}
+	return nil
 }
 
 //---------------------------------------------------------------------------------------------

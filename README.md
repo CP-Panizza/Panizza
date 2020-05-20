@@ -148,3 +148,24 @@ func init() {
 	fmt.Println("connect seccess!")
 }
 ```
+
+#router group
+```go
+type MyController struct{
+    Hello Handle `method:"GET" path:"/Hello" inject:"Hello"`
+    World Handle `method:"GET" path:"/World" inject:"World"`
+    Say Handle `method:"GET" path:"/Say" inject:"Say"`
+}
+//accordding to this controller struct,the router default perfix is struct name,
+//the router is build to /MyController/Hello, /MyController/World,/MyController/Say
+//if you want to change router perfix, you can make MyController implement method "GroupName()string" like this:
+
+func (this *MyController)GroupName()string {
+	return "xxx"
+}
+//the router is build to /xxx/Hello, /xxx/World,/xxx/Say
+```
+
+
+
+
