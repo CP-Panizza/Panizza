@@ -148,7 +148,8 @@ func init() {
 }
 ```
 
-#router group
+# router group
+
 ```go
 type MyController struct{
     Hello Handle `method:"GET" path:"/Hello" inject:"Hello"`
