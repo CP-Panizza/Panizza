@@ -1,9 +1,8 @@
 ## PANIZZA
-## web  https://cp-panizza.github.io/panizza/
+## web  https://cp-panizza.github.io/Panizza/
 Quickly to build a restapi web application!!!
 
 ## QUICK START
-#web  https://cp-panizza.github.io/Panizza/
 Install panizza
 
 ``` cmd
